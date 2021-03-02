@@ -1,12 +1,17 @@
 #include "ppm_image.h"
 #include <string>
 #include <fstream>
+#include <sstream>
+#include <iostream>
+#include <vector>
 
 using namespace agl;
 using namespace std;
 
 ppm_image::ppm_image() 
 {
+    columns = 0;
+    rows = 0;
 }
 
 ppm_image::ppm_image(int w, int h) 
@@ -31,16 +36,58 @@ ppm_image& ppm_image::operator=(const ppm_image& orig)
 
 ppm_image::~ppm_image()
 {
+    delete[] image_array;
 }
 
 bool ppm_image::load(const std::string& filename)
 {
-   return false;
+    ifstream file(filename);
+
+    if (!file)
+    {
+        return false;
+    }
+
+    string format, max_color; // used below to skip the format and max color value lines in the file 
+
+    file >> format >> columns >> rows >> max_color;
+  
+    image_array = new ppm_pixel[(rows*columns)];
+    for (int i = 0; i < (rows * columns); i++)
+    {
+        file >> image_array[i].r >> image_array[i].g >> image_array[i].b;
+    }
+    file.close();
+    
+    for (int i = 0; i < (rows * columns); i++)
+    {
+        cout << "load " << image_array[i].r << "," << image_array[i].g << "," << image_array[i].b << endl;
+    }
+    
+    return true;
 }
 
 bool ppm_image::save(const std::string& filename) const
 {
-   return false;
+   ofstream file;
+   file.open(filename);
+
+   cout << "columns: " << columns << ", rows: " << rows << endl;
+
+   for (int i = 0; i < (rows * columns); i++)
+   {
+       cout << "write " << image_array[i].r << "," << image_array[i].g << "," << image_array[i].b << endl;
+   }
+
+
+   for (int i = 0; i < (rows * columns); i++)
+   {
+       file << image_array[i].r << " " << image_array[i].g << " " << image_array[i].b << endl;
+   }
+   file.close();
+
+   return true;
+   //return false;
 }
 
  ppm_image ppm_image::resize(int w, int h) const
@@ -94,10 +141,10 @@ void ppm_image::set(int row, int col, const ppm_pixel& c)
 
 int ppm_image::height() const
 {
-   return 0;
+   return columns;
 }
 
 int ppm_image::width() const
 {
-   return 0;
+   return rows;
 }
