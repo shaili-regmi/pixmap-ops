@@ -7,7 +7,7 @@ int main(int argc, char** argv)
 {
    ppm_image image;
    image.load("../images/feep.ppm");
-   //image.save("feep-test-save.ppm"); // should match original
+   image.save("feep-test-save.ppm"); // should match original
    
    // should print 4 4
    cout << "loaded feep: " << image.width() << " " << image.height() << endl;

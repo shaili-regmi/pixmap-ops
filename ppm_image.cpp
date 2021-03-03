@@ -5,21 +5,29 @@
 #include <iostream>
 #include <vector>
 
+#define FORMAT "P3" // Image file format
+#define MAX_VALUE 255 // Maximum color value
+
 using namespace agl;
 using namespace std;
 
-ppm_image::ppm_image() 
+ppm_image::ppm_image() // default constructor
 {
     columns = 0;
     rows = 0;
 }
 
-ppm_image::ppm_image(int w, int h) 
+ppm_image::ppm_image(int w, int h) // constructor
 {
+    columns = w;
+    rows = h;
 }
 
-ppm_image::ppm_image(const ppm_image& orig)
+ppm_image::ppm_image(const ppm_image& orig) // copy constructor
 {
+    columns = orig.columns;
+    rows = orig.rows;
+    image_array = orig.image_array;
 }
 
 ppm_image& ppm_image::operator=(const ppm_image& orig)
@@ -30,12 +38,19 @@ ppm_image& ppm_image::operator=(const ppm_image& orig)
    }
 
    // todo: your code here
+   columns = orig.columns;
+   rows = orig.rows;
+   image_array = orig.image_array;
 
    return *this;   
 }
 
 ppm_image::~ppm_image()
 {
+    for (int i = 0; i < rows; i++)
+    {
+        delete[] image_array[i];
+    }
     delete[] image_array;
 }
 
@@ -51,43 +66,66 @@ bool ppm_image::load(const std::string& filename)
     string format, max_color; // used below to skip the format and max color value lines in the file 
 
     file >> format >> columns >> rows >> max_color;
-  
-    image_array = new ppm_pixel[(rows*columns)];
-    for (int i = 0; i < (rows * columns); i++)
+
+    // Creating a 2D array (array of arrays) to store the image (deleted in destructor)
+    image_array = new ppm_pixel* [rows];
+    for (int i = 0; i < rows; i++)
     {
-        file >> image_array[i].r >> image_array[i].g >> image_array[i].b;
+        image_array[i] = new ppm_pixel[columns];
+    }
+
+    // Variables temporarily used to store the pixel colors read from the file
+    int red;
+    int green;
+    int blue;
+
+    for (int i = 0; i < rows; i++)
+    {
+        for (int j = 0; j < columns; j++)
+        {
+            file >> red >> green >> blue;
+            //cout << "int red: " << red << ", int green: " << green << ", int blue: " << blue << endl;
+            image_array[i][j].r = (unsigned char)red;
+            image_array[i][j].g = (unsigned char)green;
+            image_array[i][j].b = (unsigned char)blue;
+        }
     }
     file.close();
-    
-    for (int i = 0; i < (rows * columns); i++)
+    /*
+    for (int i = 0; i < rows; i++)
     {
-        cout << "load " << image_array[i].r << "," << image_array[i].g << "," << image_array[i].b << endl;
+        for (int j = 0; j < columns; j++)
+        {
+            cout << image_array[i][j].r << " " << image_array[i][j].g << " " << image_array[i][j].b << endl;
+        }
     }
-    
+    */
     return true;
 }
 
 bool ppm_image::save(const std::string& filename) const
 {
-   ofstream file;
-   file.open(filename);
+    try
+    {
+        ofstream file(filename);
+        file << FORMAT << endl;
+        file << columns << " " << rows << endl;
+        file << MAX_VALUE << endl;
 
-   cout << "columns: " << columns << ", rows: " << rows << endl;
+        for (int i = 0; i < rows; i++)
+        {
+            for (int j = 0; j < columns; j++)
+            {
+                file << (int)image_array[i][j].r << " " << (int)image_array[i][j].g << " " << (int)image_array[i][j].b << endl;
+            }
+        }
 
-   for (int i = 0; i < (rows * columns); i++)
-   {
-       cout << "write " << image_array[i].r << "," << image_array[i].g << "," << image_array[i].b << endl;
-   }
-
-
-   for (int i = 0; i < (rows * columns); i++)
-   {
-       file << image_array[i].r << " " << image_array[i].g << " " << image_array[i].b << endl;
-   }
-   file.close();
-
-   return true;
-   //return false;
+        file.close();
+        return true;
+    } catch (...) 
+    {
+        return false;
+    }
 }
 
  ppm_image ppm_image::resize(int w, int h) const

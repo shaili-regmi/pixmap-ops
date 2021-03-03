@@ -18,12 +18,12 @@ namespace agl
   class ppm_image
   {
   public:
-     ppm_image();
-     ppm_image(int width, int height);
-     ppm_image(const ppm_image& orig);
-     ppm_image& operator=(const ppm_image& orig);
+     ppm_image(); // default constructor
+     ppm_image(int width, int height); // constructor
+     ppm_image(const ppm_image& orig); // copy constructor
+     ppm_image& operator=(const ppm_image& orig); // assignment operator
 
-     virtual ~ppm_image();
+     virtual ~ppm_image(); // destructor
 
      // load the given filename
      // returns true if the load is successful; false otherwise
@@ -73,6 +73,6 @@ namespace agl
   private:
       int columns; // number of columns/width
       int rows; // number of rows/height
-      ppm_pixel* image_array; // array that stores the image
+      ppm_pixel** image_array; // pointer for the 2D array that stores the image
   };
 }
