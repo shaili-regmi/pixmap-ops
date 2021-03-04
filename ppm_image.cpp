@@ -4,6 +4,7 @@
 #include <sstream>
 #include <iostream>
 #include <vector>
+#include <math.h>
 
 #define FORMAT "P3" // Image file format
 #define MAX_VALUE 255 // Maximum color value
@@ -21,6 +22,13 @@ ppm_image::ppm_image(int w, int h) // constructor
 {
     columns = w;
     rows = h;
+
+    // Creating a 2D array (array of arrays) to store the image (deleted in destructor)
+    image_array = new ppm_pixel * [rows];
+    for (int i = 0; i < rows; i++)
+    {
+        image_array[i] = new ppm_pixel[columns];
+    }
 }
 
 ppm_image::ppm_image(const ppm_image& orig) // copy constructor
@@ -47,11 +55,13 @@ ppm_image& ppm_image::operator=(const ppm_image& orig)
 
 ppm_image::~ppm_image()
 {
+    /*
     for (int i = 0; i < rows; i++)
     {
         delete[] image_array[i];
     }
     delete[] image_array;
+    */
 }
 
 bool ppm_image::load(const std::string& filename)
@@ -123,11 +133,11 @@ bool ppm_image::save(const std::string& filename) const
     ppm_image result(w, h);
     int old_row, old_column;
 
-    result.image_array = new ppm_pixel * [h];
+    /*result.image_array = new ppm_pixel * [h];
     for (int i = 0; i < h; i++)
     {
         result.image_array[i] = new ppm_pixel[w];
-    }
+    }*/
     cout << "rows: " << rows << ", columns: " << columns << endl;
     cout << "new rows: " << result.rows << ", new columns: " << result.columns << endl;
 
@@ -136,9 +146,9 @@ bool ppm_image::save(const std::string& filename) const
         for (int j = 0; j < w; j++)
         {
             //cout << "i: " << i << ", j: " << j << endl;
-            old_row = floor((i / (h - 1)) * (rows - 1));
+            old_row = floor((((double)i) / (h - 1)) * (rows - 1));
             
-            old_column = floor((j / (w - 1)) * (columns - 1));
+            old_column = floor((((double)j) / (w - 1)) * (columns - 1));
             //cout << "old_row: " << old_row << ", old_column: " << old_column << endl;
             ppm_pixel pixel_color = get(old_row, old_column);
             //cout << (int)pixel_color.r << " " << (int)pixel_color.g << " " << (int)pixel_color.b << endl;
