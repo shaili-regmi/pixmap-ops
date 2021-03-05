@@ -70,9 +70,11 @@ namespace agl
      // return the height of the image
      int height() const;
 
+     void clear();
+
   private:
       int columns; // number of columns/width
       int rows; // number of rows/height
-      ppm_pixel** image_array; // pointer for the 2D array that stores the image
+      ppm_pixel** image_array = NULL; // pointer for the 2D array that stores the image
   };
 }

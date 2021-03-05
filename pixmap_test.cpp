@@ -5,7 +5,9 @@ using namespace agl;
 
 int main(int argc, char** argv)
 {
+	
    ppm_image image;
+   /*
    image.load("../images/feep.ppm");
    image.save("feep-test-save.ppm"); // should match original
    
@@ -28,29 +30,35 @@ int main(int argc, char** argv)
    pixel.r = 255;
    image.set(1, 1, pixel);
    image.save("feep-test-newcolor.ppm");
-   
+   */
    // test a non-trivial image
    image.load("../images/earth-ascii.ppm"); // a real image
-
+   
    // should print 400 400
    cout << "loaded earth: " << image.width() << " " << image.height() << endl;
-   
-   // resize
-   ppm_image resize = image.resize(200,300);
-   resize.save("earth-200-300.ppm");
    /*
+   // resize
+	ppm_image resize = image.resize(200,300);
+	resize.save("earth-200-300.ppm");
+   
    // grayscale
    ppm_image grayscale = image.grayscale(); 
    grayscale.save("earth-grayscale.ppm");
-
+   
    // flip horizontal
    ppm_image flip = image.flip_horizontal(); 
    flip.save("earth-flip.ppm"); 
-
+ 
    // sub image
    ppm_image sub = image.subimage(200, 200, 100, 100); 
    sub.save("earth-subimage.ppm"); 
-
+   */
+   // replace
+   ppm_image image2;
+   image2.load("../images/soup-ascii.ppm");
+   image.replace(image2, 200, 200);
+   image.save("earth-soup-replace.ppm");
+   /*
    // gamma correction
    ppm_image gamma = image.gammaCorrect(0.6f); 
    gamma.save("earth-gamma-0.6.ppm"); 
