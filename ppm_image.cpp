@@ -319,6 +319,112 @@ ppm_image ppm_image::swirl_colors() const
     return result;
 }
 
+ppm_image ppm_image::horizontal_tiles(int number) const
+{
+    ppm_image result(columns, rows);
+    ppm_image tiles = resize((columns / number), rows);
+    int replace_row = 0;
+    int replace_column = 0;
+
+    for (int i = 0; i < number; i++)
+    {
+        result.replace(tiles, replace_row, replace_column);
+        replace_column += columns / number;
+    }
+    return result;
+}
+
+ppm_image ppm_image::invert_color() const
+{
+    ppm_image result(columns, rows);
+    ppm_pixel old_color;
+    ppm_pixel new_color;
+
+    for (int i = 0; i < rows; i++)
+    {
+        for (int j = 0; j < columns; j++)
+        {
+            old_color = image_array[i][j];
+            new_color = { ((unsigned char)(MAX_VALUE - old_color.r)), ((unsigned char)(MAX_VALUE - old_color.g)), ((unsigned char)(MAX_VALUE - old_color.b)) };
+            result.image_array[i][j] = new_color;
+        }
+    }
+    return result;
+}
+
+ppm_image ppm_image::replace_nonwhite(ppm_image background) const
+{
+    ppm_image result(columns, rows);
+    ppm_pixel old_color;
+    ppm_pixel background_color;
+    ppm_pixel new_color;
+
+    for (int i = 0; i < rows; i++)
+    {
+        for (int j = 0; j < columns; j++)
+        {
+            old_color = image_array[i][j];
+            background_color = background.image_array[i][j];
+            if (old_color.r == MAX_VALUE && old_color.g == MAX_VALUE && old_color.b == MAX_VALUE)
+            {
+                new_color = background_color;
+            }
+            else
+            {
+                new_color = old_color;
+            }
+            result.image_array[i][j] = new_color;
+        }
+    }
+    return result;
+}
+
+ppm_image ppm_image::change_color(ppm_pixel color_old, ppm_pixel color_new) const
+{
+    ppm_image result(columns, rows);
+    ppm_pixel current_color;
+
+    for (int i = 0; i < rows; i++)
+    {
+        for (int j = 0; j < columns; j++)
+        {
+            current_color = image_array[i][j];
+            if (current_color.r == color_old.r && current_color.g == color_old.g && current_color.b == color_old.b)
+            {
+                result.image_array[i][j] = color_new;
+            }
+            else
+            {
+                result.image_array[i][j] = current_color;
+            }
+        }
+    }
+    return result;
+}
+
+ppm_image ppm_image::change_non_gray_white_black(ppm_pixel new_color) const
+{
+    ppm_image result(columns, rows);
+    ppm_pixel current_color;
+
+    for (int i = 0; i < rows; i++)
+    {
+        for (int j = 0; j < columns; j++)
+        {
+            current_color = image_array[i][j];
+            if (current_color.r == current_color.g && current_color.g == current_color.b && current_color.r == current_color.b)
+            {
+                result.image_array[i][j] = current_color;
+            }
+            else
+            {
+                result.image_array[i][j] = new_color;
+            }
+        }
+    }
+    return result;
+}
+
 ppm_pixel ppm_image::get(int row, int col) const
 {
     unsigned char red;

@@ -62,6 +62,23 @@ namespace agl
      // The red channel becomes the green channel, the green becomes blue, and the blue becomes red.
      ppm_image swirl_colors() const;
 
+     // Returns a horixontally tiled copy of the image with the same size and the given number of tiles.
+     // Clamps the ends if needed
+     ppm_image horizontal_tiles(int number) const;
+
+     // Return a copy of this image with the colors inverted
+     ppm_image invert_color() const;
+
+     // Return a copy of this image with all non-white portions placed over given background picture
+     // Assumes that the two images are the same size
+     ppm_image replace_nonwhite(ppm_image background) const;
+
+     // Return a copy of this image with all of the pixels with the given color_old replaced by the given color_new
+     ppm_image change_color(ppm_pixel color_old, ppm_pixel color_new) const;
+
+     // Return a copy of this image with all of the non pure gray, white, and black pixels replaced with the given color
+     ppm_image change_non_gray_white_black(ppm_pixel new_color) const;
+     
      // Get the pixel at index (row, col)
      ppm_pixel get(int row, int col) const;
 
