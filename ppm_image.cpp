@@ -145,6 +145,7 @@ bool ppm_image::save(const std::string& filename) const
 {
     ppm_image result(w, h);
     int old_row, old_column;
+    ppm_pixel pixel_color;
 
     for (int i = 0; i < h; i++)
     {
@@ -152,11 +153,10 @@ bool ppm_image::save(const std::string& filename) const
         {
             old_row = floor((((double)i) / (h - (1))) * (rows - (1)));
             old_column = floor((((double)j) / (w - (1))) * (columns - (1)));
-            ppm_pixel pixel_color = image_array[old_row][old_column];
+            pixel_color = image_array[old_row][old_column];
             result.image_array[i][j] = pixel_color;
         }
     }
-    
     return result;
 }
 
@@ -182,9 +182,9 @@ ppm_image ppm_image::subimage(int startx, int starty, int w, int h) const
     // indices for subimage
     int i1 = 0;
     int j1 = 0; 
-    for (int i = startx; i < (startx + h); i++)
+    for (int i = startx; i < (startx + w); i++)
     {
-        for (int j = starty; j < (starty + w); j++)
+        for (int j = starty; j < (starty + h); j++)
         {
             result.image_array[i1][j1] = image_array[i][j];
             j1++;
@@ -221,27 +221,80 @@ void ppm_image::replace(const ppm_image& image, int startx, int starty)
 
 ppm_image ppm_image::alpha_blend(const ppm_image& other, float alpha) const
 {
-   ppm_image result;
-   return result;
+    // Apply the following calculation to the pixels in 
+    // our image and the given image:
+    //    this.pixels = this.pixels * (1-alpha) + other.pixel * alpha
+    // Can assume that the two images are the same size
+    ppm_image result(columns, rows);
+    ppm_pixel this_color;
+    ppm_pixel other_color;
+    float r_new;
+    float g_new;
+    float b_new;
+    ppm_pixel new_color;
+
+
+    for (int i = 0; i < rows; i++)
+    {
+        for (int j = 0; j < columns; j++)
+        {
+            this_color = image_array[i][j];
+            other_color = other.image_array[i][j];
+            r_new = floor((((float)this_color.r) * (1 - alpha)) + (((float)other_color.r) * alpha));
+            g_new = floor((((float)this_color.g) * (1 - alpha)) + (((float)other_color.g) * alpha));
+            b_new = floor((((float)this_color.b) * (1 - alpha)) + (((float)other_color.b) * alpha));
+            new_color = { ((unsigned char)r_new), ((unsigned char)g_new), ((unsigned char)b_new) };
+            result.image_array[i][j] = new_color;
+        }
+    }
+    return result;
 }
 
 ppm_image ppm_image::gammaCorrect(float gamma) const
 {
-   ppm_image result;
-   return result;
+    ppm_image result(columns, rows);
+    ppm_pixel old_color;
+    float r_correction;
+    float g_correction;
+    float b_correction;
+    ppm_pixel new_color;
+
+    // variables for intermediate calculations
+    float base_r, base_b, base_g;
+    float power = 1.0f / gamma;
+
+    for (int i = 0; i < rows; i++)
+    {
+        for (int j = 0; j < columns; j++)
+        {
+            old_color = image_array[i][j];
+            base_r = (((float)old_color.r) / ((float)MAX_VALUE));
+            base_g = (((float)old_color.g) / ((float)MAX_VALUE));
+            base_b = (((float)old_color.b) / ((float)MAX_VALUE));
+            r_correction = floor((MAX_VALUE * pow(base_r, power)));
+            g_correction = floor((MAX_VALUE * pow(base_g, power)));
+            b_correction = floor((MAX_VALUE * pow(base_b, power)));
+            new_color = { ((unsigned char)r_correction), ((unsigned char)g_correction), ((unsigned char)b_correction) };
+            result.image_array[i][j] = new_color;
+        }
+    }
+    return result;
 }
 
 ppm_image ppm_image::grayscale() const
 {
     ppm_image result(columns, rows);
+    ppm_pixel old_color;
+    double weighted_avg;
+    ppm_pixel new_color;
    
     for (int i = 0; i < rows; i++)
     {
         for (int j = 0; j < columns; j++)
         {
-            ppm_pixel old_color = image_array[i][j];
-            double weighted_avg = (0.3*old_color.r) + (0.59*old_color.g) + (0.11*old_color.b);
-            ppm_pixel new_color = { weighted_avg, weighted_avg, weighted_avg };
+            old_color = image_array[i][j];
+            weighted_avg = floor((0.3*old_color.r) + (0.59*old_color.g) + (0.11*old_color.b));
+            new_color = { ((unsigned char)weighted_avg), ((unsigned char)weighted_avg), ((unsigned char)weighted_avg) };
             result.image_array[i][j] = new_color;
         }
     }
@@ -286,23 +339,21 @@ void ppm_image::set(int row, int col, const ppm_pixel& c)
 
 int ppm_image::height() const
 {
-   return columns;
+   return rows;
 }
 
 int ppm_image::width() const
 {
-   return rows;
+   return columns;
 }
 
 void ppm_image::clear()
 {
-    delete[] image_array;
-    /*
     for (int i = 0; i < rows; i++)
     {
         delete[] image_array[i];
     }
-    delete[] image_array;*/
-    image_array = NULL;
-    
+    delete[] image_array;
+
+    image_array = NULL;  
 }
