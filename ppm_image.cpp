@@ -182,9 +182,9 @@ ppm_image ppm_image::subimage(int startx, int starty, int w, int h) const
     // indices for subimage
     int i1 = 0;
     int j1 = 0; 
-    for (int i = startx; i < (startx + w); i++)
+    for (int i = startx; i < (startx + h); i++)
     {
-        for (int j = starty; j < (starty + h); j++)
+        for (int j = starty; j < (starty + w); j++)
         {
             result.image_array[i1][j1] = image_array[i][j];
             j1++;
