@@ -58,6 +58,10 @@ namespace agl
      // Return a copy of this image converted to grayscale
      ppm_image grayscale() const;
 
+     // Return a copy of this image with the colors rotated.
+     // The red channel becomes the green channel, the green becomes blue, and the blue becomes red.
+     ppm_image swirl_colors() const;
+
      // Get the pixel at index (row, col)
      ppm_pixel get(int row, int col) const;
 

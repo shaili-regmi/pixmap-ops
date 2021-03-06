@@ -301,6 +301,24 @@ ppm_image ppm_image::grayscale() const
     return result;
 }
 
+ppm_image ppm_image::swirl_colors() const
+{
+    ppm_image result(columns, rows);
+    ppm_pixel old_color;
+    ppm_pixel new_color;
+
+    for (int i = 0; i < rows; i++)
+    {
+        for (int j = 0; j < columns; j++)
+        {
+            old_color = image_array[i][j];
+            new_color = { old_color.g, old_color.b, old_color.r };
+            result.image_array[i][j] = new_color;
+        }
+    }
+    return result;
+}
+
 ppm_pixel ppm_image::get(int row, int col) const
 {
     unsigned char red;
