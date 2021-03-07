@@ -79,6 +79,9 @@ namespace agl
      // Return a copy of this image with all of the non pure gray, white, and black pixels replaced with the given color
      ppm_image change_non_gray_white_black(ppm_pixel new_color) const;
      
+     // Returns a copy of this image stitched to another given image in the row-direction (height)
+     ppm_image combine_rows(ppm_image image) const;
+
      // Get the pixel at index (row, col)
      ppm_pixel get(int row, int col) const;
 

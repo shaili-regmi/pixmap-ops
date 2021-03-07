@@ -425,6 +425,31 @@ ppm_image ppm_image::change_non_gray_white_black(ppm_pixel new_color) const
     return result;
 }
 
+ppm_image ppm_image::combine_rows(ppm_image image) const
+{
+    ppm_image result(columns, (rows + image.rows));
+    
+    //row index for given image
+    int i1 = 0;
+    
+    for (int i = 0; i < rows; i++)
+    {
+        for (int j = 0; j < columns; j++)
+        {
+            result.image_array[i][j] = image_array[i][j];
+        }
+    }
+    for (int i = rows; i < (rows + image.rows); i++)
+    {
+        for (int j = 0; j < columns; j++)
+        {
+            result.image_array[i][j] = image.image_array[i1][j];
+        }
+        i1++;
+    }
+    return result;
+}
+
 ppm_pixel ppm_image::get(int row, int col) const
 {
     unsigned char red;
