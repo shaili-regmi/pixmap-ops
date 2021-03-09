@@ -8,7 +8,7 @@ int main(int argc, char** argv)
    ppm_image image;
    image.load("../images/feep.ppm");
    
-   //image.save("feep-test-save.ppm"); // should match original
+   image.save("feep-test-save.ppm"); // should match original
    
    // should print 4 4
    cout << "loaded feep: " << image.width() << " " << image.height() << endl;
@@ -49,16 +49,9 @@ int main(int argc, char** argv)
    flip.save("earth-flip.ppm"); 
  
    // sub image
-   ppm_image sub = image.subimage(200, 100, 100, 200); 
+   ppm_image sub = image.subimage(200, 200, 100, 100); 
    sub.save("earth-subimage.ppm"); 
-   
-  /*
-   // replace
-   ppm_image image2;
-   image2.load("../images/earth-ascii.ppm");
-   image.replace(image2, 250, 180);
-   image.save("earth-soup-replace.ppm");
-   */
+
    // gamma correction
    ppm_image gamma = image.gammaCorrect(0.6f); 
    gamma.save("earth-gamma-0.6.ppm"); 
@@ -69,16 +62,11 @@ int main(int argc, char** argv)
    // alpha blend
    ppm_image soup;
    soup.load("../images/soup-ascii.ppm");
-
-   ppm_image soup_sub = soup.subimage(50, 0, 50, 100);
-   soup_sub.save("soup-subimage.ppm");
    
    int y = (int) (0.5f * (image.width() - soup.width()));
    int x = (int) (0.5f * (image.height() - soup.height()));
    ppm_image background = image.subimage(x, y, soup.width(), soup.height());
-   background.save("background-test.ppm");
    ppm_image blend = background.alpha_blend(soup, 0.5f);
-   blend.save("preblend-test.ppm");
    image.replace(blend, x, y);
    image.save("earth-blend-0.5.ppm");
 }

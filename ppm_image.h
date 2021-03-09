@@ -75,9 +75,6 @@ namespace agl
 
      // Return a copy of this image with all of the pixels with the given color_old replaced by the given color_new
      ppm_image change_color(ppm_pixel color_old, ppm_pixel color_new) const;
-
-     // Return a copy of this image with all of the non pure gray, white, and black pixels replaced with the given color
-     ppm_image change_non_gray_white_black(ppm_pixel new_color) const;
      
      // Returns a copy of this image stitched to another given image in the row-direction (height)
      ppm_image combine_rows(ppm_image image) const;
@@ -94,6 +91,7 @@ namespace agl
      // return the height of the image
      int height() const;
 
+     // delete the 2D array used to store the image to free memory
      void clear();
 
   private:

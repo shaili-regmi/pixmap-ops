@@ -221,10 +221,6 @@ void ppm_image::replace(const ppm_image& image, int startx, int starty)
 
 ppm_image ppm_image::alpha_blend(const ppm_image& other, float alpha) const
 {
-    // Apply the following calculation to the pixels in 
-    // our image and the given image:
-    //    this.pixels = this.pixels * (1-alpha) + other.pixel * alpha
-    // Can assume that the two images are the same size
     ppm_image result(columns, rows);
     ppm_pixel this_color;
     ppm_pixel other_color;
@@ -232,7 +228,6 @@ ppm_image ppm_image::alpha_blend(const ppm_image& other, float alpha) const
     float g_new;
     float b_new;
     ppm_pixel new_color;
-
 
     for (int i = 0; i < rows; i++)
     {
@@ -396,29 +391,6 @@ ppm_image ppm_image::change_color(ppm_pixel color_old, ppm_pixel color_new) cons
             else
             {
                 result.image_array[i][j] = current_color;
-            }
-        }
-    }
-    return result;
-}
-
-ppm_image ppm_image::change_non_gray_white_black(ppm_pixel new_color) const
-{
-    ppm_image result(columns, rows);
-    ppm_pixel current_color;
-
-    for (int i = 0; i < rows; i++)
-    {
-        for (int j = 0; j < columns; j++)
-        {
-            current_color = image_array[i][j];
-            if (current_color.r == current_color.g && current_color.g == current_color.b && current_color.r == current_color.b)
-            {
-                result.image_array[i][j] = current_color;
-            }
-            else
-            {
-                result.image_array[i][j] = new_color;
             }
         }
     }
