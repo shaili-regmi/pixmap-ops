@@ -3,6 +3,8 @@
 Image manipulation demos based on the PPM image format.
 
 TODO: Add a representative image for your project here
+![art1](https://github.com/shaili-regmi/pixmap-ops/blob/main/art1-birds-and-tiled-clouds.ppm)
+![art2](https://github.com/shaili-regmi/pixmap-ops/blob/main/art2-eyelights-invert-swirl-blend-0.6.ppm)
 
 ## How to build
 
