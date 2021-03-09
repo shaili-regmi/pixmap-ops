@@ -16,8 +16,8 @@ int main(int argc, char** argv)
 
 	ppm_image image2;
 	image2.load("art/ppm/cloud-ascii.ppm");
-	cout << "loaded image with width and height: " << image2.width() << " " << image2.height() << endl; 
-	
+	cout << "loaded image with width and height: " << image2.width() << " " << image2.height() << endl;
+
 	ppm_image tiled = image2.horizontal_tiles(3);
 	ppm_image tiled_resize = tiled.resize(image.width(), (image.height()/2));
 	ppm_image background = tiled_resize.combine_rows(tiled_resize);
